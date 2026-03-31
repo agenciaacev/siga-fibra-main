@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plano, PLATAFORMAS, calcularTotal, formatarPreco } from "../../data/planos";
+import type { Plano } from "../../data/planos";
+import { PLATAFORMAS, calcularTotal, formatarPreco } from "../../data/planos";
 
 interface CardPlanoProps {
   plano: Plano;
