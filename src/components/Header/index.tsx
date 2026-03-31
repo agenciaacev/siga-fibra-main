@@ -1,7 +1,7 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Header() {
-  const location = useLocation();
+  // const location = useLocation();
 
   return (
     <header className="bg-white border-b border-gray-200 px-6 md:px-10 flex items-center justify-between h-16 sticky top-0 z-50">
