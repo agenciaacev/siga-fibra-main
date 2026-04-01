@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import type { Plano } from "../../data/planos";
 import { PLATAFORMAS, calcularTotal, formatarPreco } from "../../data/planos";
+import { usePlanosContext } from "../../contexts/PlanosContext";
 
 interface CardPlanoProps {
   plano: Plano;
@@ -10,21 +11,13 @@ interface CardPlanoProps {
 
 export default function CardPlano({ plano }: CardPlanoProps) {
   const navigate = useNavigate();
-  const [extras, setExtras] = useState<string[]>([]);
+  const { getExtras, adicionarExtra, removerExtra } = usePlanosContext();
+  const extras = getExtras(plano.slug);
   const [pickerAberto, setPickerAberto] = useState(false);
 
   const todasPlataformas = [...plano.plataformasInclusas, ...extras];
   const total = calcularTotal(plano, extras);
   const { inteiro, centavos } = formatarPreco(total);
-
-  const adicionarExtra = (nome: string) => {
-    if (!extras.includes(nome)) setExtras([...extras, nome]);
-    setPickerAberto(false);
-  };
-
-  const removerExtra = (nome: string) => {
-    setExtras(extras.filter((p) => p !== nome));
-  };
 
   const plataformasDisponiveis = Object.keys(PLATAFORMAS).filter(
     (p) => !todasPlataformas.includes(p)
@@ -172,9 +165,13 @@ export default function CardPlano({ plano }: CardPlanoProps) {
                   color: "#1a2e40",
                 }}
               >
-                <span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: PLATAFORMAS[p]?.cor }}
+                <img
+                  src={PLATAFORMAS[p]?.icon}
+                  alt={p}
+                  className="w-4 h-4 rounded flex-shrink-0 object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                  }}
                 />
                 {p}
               </div>
@@ -201,13 +198,17 @@ export default function CardPlano({ plano }: CardPlanoProps) {
                   (e.currentTarget as HTMLElement).style.color = "#1a2e40";
                 }}
               >
-                <span
-                  className="w-2 h-2 rounded-full flex-shrink-0"
-                  style={{ background: PLATAFORMAS[p]?.cor }}
+                <img
+                  src={PLATAFORMAS[p]?.icon}
+                  alt={p}
+                  className="w-4 h-4 rounded flex-shrink-0 object-cover"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                  }}
                 />
                 {p}
                 <button
-                  onClick={() => removerExtra(p)}
+                  onClick={() => removerExtra(plano.slug, p)}
                   className="absolute right-1.5 top-1/2 -translate-y-1/2 text-red-500 font-bold text-xs leading-none"
                 >
                   ✕
@@ -265,7 +266,10 @@ export default function CardPlano({ plano }: CardPlanoProps) {
                   {plataformasDisponiveis.map((p) => (
                     <button
                       key={p}
-                      onClick={() => adicionarExtra(p)}
+                      onClick={() => {
+                        adicionarExtra(plano.slug, p);
+                        setPickerAberto(false);
+                      }}
                       className="flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-all duration-150"
                       style={{
                         background: "#f4f8fb",

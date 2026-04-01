@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { planos, PLATAFORMAS, formatarPreco, calcularTotal } from "../../data/planos";
+import { usePlanosContext } from "../../contexts/PlanosContext";
 
 export default function Plano() {
   const { slug } = useParams();
   const navigate = useNavigate();
-  const [extras, setExtras] = useState<string[]>([]);
+  const { getExtras, adicionarExtra, removerExtra } = usePlanosContext();
+  const extras = slug ? getExtras(slug) : [];
 
   const plano = planos.find((p) => p.slug === slug);
 
@@ -29,14 +30,6 @@ export default function Plano() {
   const todasPlataformas = [...plano.plataformasInclusas, ...extras];
   const total = calcularTotal(plano, extras);
   const { inteiro, centavos } = formatarPreco(total);
-
-  const adicionarExtra = (nome: string) => {
-    if (!extras.includes(nome)) setExtras([...extras, nome]);
-  };
-
-  const removerExtra = (nome: string) => {
-    setExtras(extras.filter((p) => p !== nome));
-  };
 
   const plataformasDisponiveis = Object.keys(PLATAFORMAS).filter(
     (p) => !todasPlataformas.includes(p)
@@ -142,7 +135,14 @@ export default function Plano() {
               const info = PLATAFORMAS[p];
               return (
                 <div key={p} className="rounded-xl p-4 flex items-center gap-3" style={{ background: "#fff", border: "1.5px solid #e2eaf1" }}>
-                  <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: info.cor }} />
+                  <img
+                    src={info.icon}
+                    alt={p}
+                    className="w-8 h-8 rounded flex-shrink-0 object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
                   <div>
                     <div className="text-sm font-semibold" style={{ color: "#0d2137" }}>{info.label}</div>
                     <div className="text-xs" style={{ color: "#3ecf8e" }}>incluso</div>
@@ -168,10 +168,17 @@ export default function Plano() {
                   style={{ background: "#fff", border: "1.5px solid #00c2c7", cursor: "pointer" }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.background = "#fff0f0"; (e.currentTarget as HTMLElement).style.borderColor = "#ffb3b3"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.background = "#fff"; (e.currentTarget as HTMLElement).style.borderColor = "#00c2c7"; }}
-                  onClick={() => removerExtra(p)}
+                  onClick={() => slug && removerExtra(slug, p)}
                   title="Clique para remover"
                 >
-                  <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: info.cor }} />
+                  <img
+                    src={info.icon}
+                    alt={p}
+                    className="w-8 h-8 rounded flex-shrink-0 object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
                   <div className="flex-1">
                     <div className="text-sm font-semibold" style={{ color: "#0d2137" }}>{info.label}</div>
                     <div className="text-xs" style={{ color: "#6b8299" }}>+ R$ {info.preco.toFixed(2)}/mês</div>
@@ -199,9 +206,16 @@ export default function Plano() {
                   style={{ background: "#fff", border: "1.5px solid #e2eaf1", cursor: "pointer" }}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#00c2c7"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; (e.currentTarget as HTMLElement).style.boxShadow = "0 8px 24px rgba(0,194,199,0.12)"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#e2eaf1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; (e.currentTarget as HTMLElement).style.boxShadow = "none"; }}
-                  onClick={() => adicionarExtra(nome)}
+                  onClick={() => slug && adicionarExtra(slug, nome)}
                 >
-                  <span className="w-3 h-3 rounded-full flex-shrink-0" style={{ background: info.cor }} />
+                  <img
+                    src={info.icon}
+                    alt={nome}
+                    className="w-8 h-8 rounded flex-shrink-0 object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).style.display = "none";
+                    }}
+                  />
                   <div className="flex-1">
                     <div className="text-sm font-semibold" style={{ color: "#0d2137" }}>{info.label}</div>
                     <div className="text-xs" style={{ color: "#6b8299" }}>+ R$ {info.preco.toFixed(2)}/mês</div>
@@ -226,7 +240,7 @@ export default function Plano() {
                   key={p.slug}
                   className="rounded-xl p-5 transition-all duration-200 cursor-pointer"
                   style={{ background: "#fff", border: "1.5px solid #e2eaf1" }}
-                  onClick={() => { navigate(`/plano/${p.slug}`); setExtras([]); }}
+                  onClick={() => navigate(`/plano/${p.slug}`)}
                   onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#00c2c7"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
                   onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = "#e2eaf1"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
                 >

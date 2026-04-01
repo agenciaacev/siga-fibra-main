@@ -3,6 +3,7 @@ export type Plataforma = {
   cor: string;
   label: string;
   preco: number;
+  icon: string;
 };
 
 export type Plano = {
@@ -16,14 +17,14 @@ export type Plano = {
 };
 
 export const PLATAFORMAS: Record<string, Plataforma> = {
-  Max:        { nome: "Max",       cor: "#6441a5", label: "Max (HBO)",    preco: 8.90  },
-  Globoplay:  { nome: "Globoplay", cor: "#ff5f00", label: "Globoplay",    preco: 7.50  },
-  Ubook:      { nome: "Ubook",     cor: "#f4a100", label: "Ubook",        preco: 3.90  },
-  Watch:      { nome: "Watch",     cor: "#00b4d8", label: "Claro Watch",  preco: 4.50  },
-  "Disney+":  { nome: "Disney+",   cor: "#0d3b8e", label: "Disney+",      preco: 11.90 },
-  Netflix:    { nome: "Netflix",   cor: "#e50914", label: "Netflix",      preco: 14.90 },
-  Prime:      { nome: "Prime",     cor: "#00a8e0", label: "Prime Video",  preco: 6.90  },
-  "Apple TV+":{ nome: "Apple TV+", cor: "#555555", label: "Apple TV+",   preco: 5.90  },
+  Max:        { nome: "Max",       cor: "#6441a5", label: "Max (HBO)",    preco: 8.90,  icon: "https://images.justwatch.com/icon/287637-max.png" },
+  Globoplay:  { nome: "Globoplay", cor: "#ff5f00", label: "Globoplay",    preco: 7.50,  icon: "https://images.justwatch.com/icon/8348801-globoplay.png" },
+  Ubook:      { nome: "Ubook",     cor: "#f4a100", label: "Ubook",        preco: 3.90,  icon: "https://images.justwatch.com/icon/170815-ubook.png" },
+  Watch:      { nome: "Watch",     cor: "#00b4d8", label: "Claro Watch",  preco: 4.50,  icon: "https://images.justwatch.com/icon/7836316-claro-watch-sports.png" },
+  "Disney+":  { nome: "Disney+",   cor: "#0d3b8e", label: "Disney+",      preco: 11.90, icon: "https://images.justwatch.com/icon/190814-disney-plus.png" },
+  Netflix:    { nome: "Netflix",   cor: "#e50914", label: "Netflix",      preco: 14.90, icon: "https://images.justwatch.com/icon/8348813-netflix.png" },
+  Prime:      { nome: "Prime",     cor: "#00a8e0", label: "Prime Video",  preco: 6.90,  icon: "https://images.justwatch.com/icon/8348816-amazon-prime-video.png" },
+  "Apple TV+":{ nome: "Apple TV+", cor: "#555555", label: "Apple TV+",   preco: 5.90,  icon: "https://images.justwatch.com/icon/190859-apple-tv-plus.png" },
 };
 
 export const planos: Plano[] = [
